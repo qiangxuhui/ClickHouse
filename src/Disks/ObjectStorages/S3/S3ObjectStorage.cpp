@@ -377,7 +377,7 @@ void S3ObjectStorage::removeObjectsImpl(const StoredObjects & objects, bool if_e
             request.SetDelete(delkeys);
             auto outcome = client_ptr->DeleteObjects(request);
 
-            auto * outcome_error = outcome.IsSuccess() ? nullptr : &outcome.GetError();
+            const auto * outcome_error = outcome.IsSuccess() ? nullptr : &outcome.GetError();
             auto time_now = std::chrono::system_clock::now();
             for (const auto & object : objects)
             {
