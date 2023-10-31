@@ -466,7 +466,7 @@ void S3ObjectStorage::copyObjectToAnotherObjectStorage( // NOLINT
             object_to.remote_path,
             settings_ptr->request_settings,
             patchSettings(read_settings),
-            blob_storage_log,
+            getBlobStorageLog(),
             object_to_attributes,
             scheduler,
             /* for_disk_s3= */ true);
@@ -496,7 +496,7 @@ void S3ObjectStorage::copyObject( // NOLINT
         object_to.remote_path,
         settings_ptr->request_settings,
         patchSettings(read_settings),
-        blob_storage_log,
+        getBlobStorageLog(),
         object_to_attributes,
         scheduler,
         /* for_disk_s3= */ true);

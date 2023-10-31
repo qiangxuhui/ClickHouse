@@ -216,6 +216,8 @@ BackupWriterS3::BackupWriterS3(
     request_settings.allow_native_copy = allow_s3_native_copy;
     request_settings.setStorageClassName(storage_class_name);
     client = makeS3Client(s3_uri_, access_key_id_, secret_access_key_, s3_settings, context_);
+    if (context_->hasQueryContext())
+        blob_storage_log.query_id = context_->getQueryContext()->getCurrentQueryId();
 }
 
 void BackupWriterS3::copyFileFromDisk(const String & path_in_backup, DiskPtr src_disk, const String & src_path,

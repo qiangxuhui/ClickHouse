@@ -140,8 +140,10 @@ def wait_for_delete_s3_objects(cluster, expected, timeout=30):
 
 def remove_all_s3_objects(cluster):
     minio = cluster.minio_client
-    for obj in list_objects(cluster, "data/"):
+    objects_to_delete = list_objects(cluster, "data/")
+    for obj in objects_to_delete:
         minio.remove_object(cluster.minio_bucket, obj.object_name)
+    return objects_to_delete
 
 
 @pytest.fixture(autouse=True, scope="function")

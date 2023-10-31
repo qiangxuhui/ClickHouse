@@ -139,6 +139,7 @@ namespace
                 ProfileEvents::increment(ProfileEvents::DiskS3CreateMultipartUpload);
 
             auto outcome = client_ptr->CreateMultipartUpload(request);
+            blob_storage_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadCreate, dest_bucket, dest_key, {}, 0, outcome.IsSuccess() ? nullptr : &outcome.GetError());
 
             if (outcome.IsSuccess())
             {
@@ -185,6 +186,8 @@ namespace
 
                 auto outcome = client_with_long_timeout_ptr->CompleteMultipartUpload(request);
 
+                blob_storage_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadComplete, dest_bucket, dest_key, {}, 0, outcome.IsSuccess() ? nullptr : &outcome.GetError());
+
                 if (outcome.IsSuccess())
                 {
                     LOG_TRACE(log, "Multipart upload has completed. Bucket: {}, Key: {}, Upload_id: {}, Parts: {}", dest_bucket, dest_key, multipart_upload_id, part_tags.size());
@@ -213,7 +216,9 @@ namespace
             abort_request.SetBucket(dest_bucket);
             abort_request.SetKey(dest_key);
             abort_request.SetUploadId(multipart_upload_id);
-            client_ptr->AbortMultipartUpload(abort_request);
+            auto outcome = client_ptr->AbortMultipartUpload(abort_request);
+            blob_storage_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadAbort, dest_bucket, dest_key, {}, 0, outcome.IsSuccess() ? nullptr : &outcome.GetError());
+
             multipart_upload_aborted = true;
         }
 
@@ -510,6 +515,8 @@ namespace
                 auto outcome = client_ptr->PutObject(request);
                 watch.stop();
 
+                blob_storage_log.addEvent(BlobStorageLogElement::EventType::Upload, dest_bucket, dest_key, {}, size, outcome.IsSuccess() ? nullptr : &outcome.GetError());
+
                 if (outcome.IsSuccess())
                 {
                     Int64 object_size = request.GetContentLength();
@@ -590,6 +597,8 @@ namespace
                 ProfileEvents::increment(ProfileEvents::DiskS3UploadPart);
 
             auto outcome = client_ptr->UploadPart(req);
+            blob_storage_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadWrite, dest_bucket, dest_key, {}, size, outcome.IsSuccess() ? nullptr : &outcome.GetError());
+
             if (!outcome.IsSuccess())
             {
                 abortMultipartUpload();
