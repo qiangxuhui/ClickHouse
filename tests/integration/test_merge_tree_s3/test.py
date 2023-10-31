@@ -862,6 +862,18 @@ def test_merge_canceled_by_s3_errors(cluster, broken_s3, node_name, storage_poli
 
     node.wait_for_log_line("ExpectedError Message: mock s3 injected error")
 
+    table_uuid = node.query(
+        "SELECT uuid FROM system.tables WHERE database = 'default' AND name = 'test_merge_canceled_by_s3_errors' LIMIT 1"
+    ).strip()
+
+    node.query("SYSTEM FLUSH LOGS")
+    error_count_in_blob_log = node.query(
+        f"SELECT count() FROM system.blob_storage_log WHERE query_id like '{table_uuid}::%' AND error_msg like '%mock s3 injected error%'"
+    ).strip()
+    assert int(error_count_in_blob_log) > 0, node.query(
+        "SELECT * FROM system.blob_storage_log FORMAT PrettyCompactMonoBlock"
+    )
+
     check_no_objects_after_drop(
         cluster, table_name="test_merge_canceled_by_s3_errors", node_name=node_name
     )
