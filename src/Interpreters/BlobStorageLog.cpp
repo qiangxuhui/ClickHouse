@@ -1,4 +1,5 @@
 #include <Interpreters/BlobStorageLog.h>
+
 #include <DataTypes/DataTypesNumber.h>
 #include <DataTypes/DataTypeString.h>
 #include <DataTypes/DataTypeEnum.h>
@@ -85,6 +86,7 @@ void BlobStorageLogElement::appendToBlock(MutableColumns & columns) const
     assert(i == coulumn_names.size() && columns.size() == coulumn_names.size());
 }
 
+#if USE_AWS_S3
 
 void BlobStorageLogWriter::addEvent(
     BlobStorageLogElement::EventType event_type,
@@ -137,4 +139,7 @@ bool BlobStorageLogWriter::operator==(const BlobStorageLogWriter & other) const
         && local_path == other.local_path;
 }
 
+#endif
+
 }
+

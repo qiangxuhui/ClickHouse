@@ -16,7 +16,7 @@ Columns:
     - `MultiPartUploadWrite`
     - `MultiPartUploadComplete`
     - `MultiPartUploadAbort`
-- `data_size` ([UInt64](../../sql-reference/data-types/uint.md)) — Size of the data in bytes. Only for `Upload` and `MultiPartUploadWrite` events.
+- `data_size` ([UInt64](../../sql-reference/data-types/int-uint.md)) — Size of the data in bytes. Only for `Upload` and `MultiPartUploadWrite` events.
 - `query_id` ([String](../../sql-reference/data-types/string.md)) — Query ID. Set for write operations where it is possible to determine the query ID.
 
 

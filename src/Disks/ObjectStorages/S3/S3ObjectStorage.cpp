@@ -550,15 +550,18 @@ std::unique_ptr<IObjectStorage> S3ObjectStorage::cloneObjectStorage(
 
 BlobStorageLogWriter S3ObjectStorage::getBlobStorageLog()
 {
+
+    // return {};
+
     /// We try to set blob_storage_log at first attempt to access
-    /// because during disk startup system logs are not yet initalized
+    /// because during disk startup system logs are not yet initialized
     if (!blob_storage_log.isInitialized())
     {
         blob_storage_log = BlobStorageLogWriter(Context::getGlobalContextInstance()->getBlobStorageLog());
         blob_storage_log.disk_name = disk_name;
     }
 
-    /// Make a copy with local properies like query_id, object path, etc
+    /// Make a copy with local properties like query_id, object path, etc
     BlobStorageLogWriter blob_storage_log_copy(blob_storage_log);
     if (CurrentThread::isInitialized() && CurrentThread::get().getQueryContext())
         blob_storage_log_copy.query_id = CurrentThread::getQueryId();

@@ -62,7 +62,7 @@ class BlobStorageLog : public SystemLog<BlobStorageLogElement>
 using BlobStorageLogPtr = std::shared_ptr<BlobStorageLog>;
 
 /// Writes events to BlobStorageLog
-/// Can additionaly hold some context information
+/// Can additionally hold some context information
 class BlobStorageLogWriter
 {
 public:
