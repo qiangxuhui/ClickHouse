@@ -421,7 +421,7 @@ void WriteBufferFromS3::abortMultipartUpload()
 
     ProfileEvents::increment(ProfileEvents::WriteBufferFromS3Microseconds, watch.elapsedMicroseconds());
 
-    blob_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadCreate, bucket, key, {}, 0,
+    blob_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadAbort, bucket, key, {}, 0,
                       outcome.IsSuccess() ? nullptr : &outcome.GetError());
 
     if (!outcome.IsSuccess())
@@ -518,19 +518,19 @@ void WriteBufferFromS3::writePart(WriteBufferFromS3::PartData && data)
 
         ProfileEvents::increment(ProfileEvents::WriteBufferFromS3Microseconds, watch.elapsedMicroseconds());
 
-        if (!outcome.IsSuccess())
-        {
-            ProfileEvents::increment(ProfileEvents::WriteBufferFromS3RequestsErrors, 1);
-            write_settings.resource_link.accumulate(cost); // We assume no resource was used in case of failure
-            throw S3Exception(outcome.GetError().GetMessage(), outcome.GetError().GetErrorType());
-        }
-
         blob_log.addEvent(BlobStorageLogElement::EventType::MultiPartUploadWrite,
             /* bucket = */ bucket,
             /* remote_path = */ key,
             /* local_path = */ {},
             /* data_size */ data_size,
             outcome.IsSuccess() ? nullptr : &outcome.GetError());
+
+        if (!outcome.IsSuccess())
+        {
+            ProfileEvents::increment(ProfileEvents::WriteBufferFromS3RequestsErrors, 1);
+            write_settings.resource_link.accumulate(cost); // We assume no resource was used in case of failure
+            throw S3Exception(outcome.GetError().GetMessage(), outcome.GetError().GetErrorType());
+        }
 
         multipart_tags[part_number-1] = outcome.GetResult().GetETag();
 

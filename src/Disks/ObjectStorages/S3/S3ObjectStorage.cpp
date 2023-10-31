@@ -325,8 +325,8 @@ void S3ObjectStorage::removeObjectImpl(const StoredObject & object, bool if_exis
     request.SetKey(object.remote_path);
     auto outcome = client_ptr->DeleteObject(request);
     getBlobStorageLog().addEvent(BlobStorageLogElement::EventType::Delete,
-                              bucket, object.remote_path, object.local_path, 0,
-                              outcome.IsSuccess() ? nullptr : &outcome.GetError());
+                                 bucket, object.remote_path, object.local_path, 0,
+                                 outcome.IsSuccess() ? nullptr : &outcome.GetError());
 
     throwIfUnexpectedError(outcome, if_exists);
 
@@ -382,8 +382,8 @@ void S3ObjectStorage::removeObjectsImpl(const StoredObjects & objects, bool if_e
             for (const auto & object : objects)
             {
                 blob_storage_log_writer.addEvent(BlobStorageLogElement::EventType::Delete,
-                                          bucket, object.remote_path, object.local_path, 0,
-                                          outcome_error, time_now);
+                                                 bucket, object.remote_path, object.local_path, 0,
+                                                 outcome_error, time_now);
             }
 
             LOG_DEBUG(log, "Objects with paths [{}] were removed from S3", keys);
@@ -550,9 +550,6 @@ std::unique_ptr<IObjectStorage> S3ObjectStorage::cloneObjectStorage(
 
 BlobStorageLogWriter S3ObjectStorage::getBlobStorageLog()
 {
-
-    // return {};
-
     /// We try to set blob_storage_log at first attempt to access
     /// because during disk startup system logs are not yet initialized
     if (!blob_storage_log.isInitialized())
@@ -567,7 +564,6 @@ BlobStorageLogWriter S3ObjectStorage::getBlobStorageLog()
         blob_storage_log_copy.query_id = CurrentThread::getQueryId();
 
     return blob_storage_log_copy;
-
 }
 
 S3ObjectStorage::Clients::Clients(std::shared_ptr<S3::Client> client_, const S3ObjectStorageSettings & settings)

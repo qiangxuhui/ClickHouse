@@ -1251,8 +1251,9 @@ void StorageS3::truncate(const ASTPtr & /* query */, const StorageMetadataPtr &,
 
     const auto * response_error = response.IsSuccess() ? nullptr : &response.GetError();
     auto time_now = std::chrono::system_clock::now();
+    auto blob_storage_log_writer = getBlobStorageLog();
     for (const auto & key : query_configuration.keys)
-        blob_storage_log.addEvent(BlobStorageLogElement::EventType::Delete, query_configuration.url.bucket, key, {}, 0, response_error, time_now);
+        blob_storage_log_writer.addEvent(BlobStorageLogElement::EventType::Delete, query_configuration.url.bucket, key, {}, 0, response_error, time_now);
 
     if (!response.IsSuccess())
     {
@@ -1770,6 +1771,23 @@ void StorageS3::addColumnsToCache(
     auto cache_keys = getKeysForSchemaCache(sources, format_name, format_settings, ctx);
     auto & schema_cache = getSchemaCache(ctx);
     schema_cache.addManyColumns(cache_keys, columns);
+}
+
+BlobStorageLogWriter StorageS3::getBlobStorageLog()
+{
+    /// We try to set blob_storage_log at first attempt to access
+    /// because during disk startup system logs are not yet initialized
+    if (!blob_storage_log.isInitialized())
+    {
+        blob_storage_log = BlobStorageLogWriter(Context::getGlobalContextInstance()->getBlobStorageLog());
+    }
+
+    /// Make a copy with local properties like query_id, object path, etc
+    BlobStorageLogWriter blob_storage_log_copy(blob_storage_log);
+    if (CurrentThread::isInitialized() && CurrentThread::get().getQueryContext())
+        blob_storage_log_copy.query_id = CurrentThread::getQueryId();
+
+    return blob_storage_log_copy;
 }
 
 }
