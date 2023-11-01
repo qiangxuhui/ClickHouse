@@ -59,7 +59,7 @@ void BlobStorageLogElement::appendToBlock(MutableColumns & columns) const
     assert(coulumn_names.at(i) == "event_time");
     columns[i++]->insert(event_time_seconds);
     assert(coulumn_names.at(i) == "event_time_microseconds");
-    columns[i++]->insert(timeInMicroseconds(event_time));
+    columns[i++]->insert(Decimal64(timeInMicroseconds(event_time)));
 
     assert(coulumn_names.at(i) == "event_type");
     columns[i++]->insert(static_cast<Int8>(event_type));
