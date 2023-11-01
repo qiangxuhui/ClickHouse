@@ -22,7 +22,7 @@ Columns:
 - `disk_name` ([LowCardinality(String)](../../sql-reference/data-types/lowcardinality.md)) — Name of the associated disk.
 - `bucket` ([String](../../sql-reference/data-types/string.md)) — Name of the bucket.
 - `remote_path` ([String](../../sql-reference/data-types/string.md)) — Path to the remote resource.
-- `local_path` ([String](../../sql-reference/data-types/string.md)) — Path to the local resource (metadata file) reffering to the remote resource.
+- `local_path` ([String](../../sql-reference/data-types/string.md)) — Path to the metadata file on the local system, which references the remote resource.
 - `data_size` ([UInt32](../../sql-reference/data-types/int-uint.md#uint-ranges)) — Size of the data involved in the upload event.
 - `error_msg` ([String](../../sql-reference/data-types/string.md)) — Error message associated with the event, if any.
 

@@ -555,8 +555,7 @@ public:
                     file_name,
                     DBMS_DEFAULT_BUFFER_SIZE,
                     request_settings,
-                    {},
-                    nullptr,
+                    BlobStorageLogWriter{},
                     std::nullopt,
                     getAsyncPolicy().getScheduler());
     }
