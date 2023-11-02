@@ -21,7 +21,7 @@
 	url = https://github.com/ClickHouse/capnproto
 [submodule "contrib/double-conversion"]
 	path = contrib/double-conversion
-	url = https://github.com/google/double-conversion
+	url = https://github.com/qiangxuhui/double-conversion
 [submodule "contrib/re2"]
 	path = contrib/re2
 	url = https://github.com/google/re2
@@ -69,7 +69,7 @@
 	url = https://github.com/ClickHouse/h3
 [submodule "contrib/libunwind"]
 	path = contrib/libunwind
-	url = https://github.com/ClickHouse/libunwind
+	url = https://github.com/qiangxuhui/ch-libunwind.git
 [submodule "contrib/simdjson"]
 	path = contrib/simdjson
 	url = https://github.com/simdjson/simdjson
@@ -175,7 +175,7 @@
 	url = https://github.com/ClickHouse/libpq
 [submodule "contrib/boringssl"]
 	path = contrib/boringssl
-	url = https://github.com/ClickHouse/boringssl
+	url = https://github.com/qiangxuhui/ch-boringssl
 [submodule "contrib/NuRaft"]
 	path = contrib/NuRaft
 	url = https://github.com/ClickHouse/NuRaft

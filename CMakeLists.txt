@@ -13,6 +13,11 @@ else()
     set(RECONFIGURE_MESSAGE_LEVEL WARNING)
 endif()
 
+# set loong64 param
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mcmodel=extreme")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -mcmodel=extreme")
+set(LINKER_NAME "/usr/local/bin/ld.lld")
+
 include (cmake/arch.cmake)
 include (cmake/target.cmake)
 include (cmake/tools.cmake)
